@@ -13,12 +13,13 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 import torchaudio
+import soundfile
 
 from functools import partial
 
 from fairseq.data.audio.raw_audio_dataset import RawAudioDataset
 
-import librosa
+#import librosa
 
 logger = logging.getLogger(__name__)
 
@@ -78,20 +79,25 @@ class FileAudioDatasetV2(RawAudioDataset):
 
     def __getitem__(self, index):
         if self.segmented:
-            import librosa
+            #import librosa
             sid, fname, start, end = self.fnames[index]
             try:
-                wav, curr_sample_rate = librosa.load(
-                    fname, sr=self.sample_rate, offset=start, duration=end - start)
+                wav, curr_sample_rate = soundfile.read(
+                    file=fname, start=start * self.sample_rate, stop=end * self.sample_rate
+                )
+                #wav, curr_sample_rate = librosa.load(
+                #    fname, sr=self.sample_rate, offset=start, duration=end - start)
             except:
-                duration = librosa.get_duration(filename=fname)
+                sound_file = soundfile.read(fname)
+                duration = len(sound_file[0]) / sound_file[1]
                 print(fname, start, end, duration)
                 assert False
         else:
             fname = os.path.join(self.root_dir, self.fnames[index])
             if self.use_librosa:
-                import librosa
-                wav, curr_sample_rate = librosa.load(fname, sr=self.sample_rate)
+                #import librosa
+                #wav, curr_sample_rate = librosa.load(fname, sr=self.sample_rate)
+                wav, curr_sample_rate = sf.read(fname)
             else:
                 import soundfile as sf
                 wav, curr_sample_rate = sf.read(fname)
@@ -448,8 +454,11 @@ class FileAudioFeatClassificationDataset(RawAudioDataset):
         fname = os.path.join(self.root_dir, self.fnames[index])
         # if self.use_librosa:
         start, end = self.spans[index]
-        wav, curr_sample_rate = librosa.load(fname, sr=self.sample_rate,
-                                             offset=start, duration=end - start)
+        wav, curr_sample_rate = soundfile.read(
+                    file=fname, start=start * self.sample_rate, stop=end * self.sample_rate
+                )
+        #wav, curr_sample_rate = librosa.load(fname, sr=self.sample_rate,
+        #                                     offset=start, duration=end - start)
         # else:
         #     import soundfile as sf
         #     wav, curr_sample_rate = sf.read(fname)
@@ -524,3 +533,4 @@ class FileAudioFeatClassificationDataset(RawAudioDataset):
         return {"id": torch.LongTensor([s["id"] for s in samples]),
                 "target": torch.LongTensor([s["target"] for s in samples]),
                 "net_input": input}
+
