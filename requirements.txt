@@ -7,4 +7,4 @@ fvcore==0.1.5.post20210330
 omegaconf==2.0.5
 einops==0.3.0
 fire==0.2.1
-soundfile==0.10.3
+soundfile==0.10.3.post1
