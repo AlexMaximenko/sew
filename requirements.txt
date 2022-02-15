@@ -1,0 +1,9 @@
+torch==1.8.0
+torchaudio==0.8.0
+tqdm==4.49.0
+Hydra==2.5
+hydra-core==1.0.4
+fvcore==0.1.5.post20210330
+omegaconf==2.0.5
+einops==0.3.0
+fire==0.2.1
