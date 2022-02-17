@@ -1,4 +1,4 @@
-w2v_path=`realpath $1`
+w2v_path=$1
 split=$2
 ngpu=$3
 
@@ -6,9 +6,11 @@ seed=1
 
 root=example
 
-valid_subset=dev-other
+valid_subset=val_1
 
-data=`pwd`/manifest/librispeech
+data=$4
+train_subset=$5
+valid_subset=$6
 user_dir=`pwd`/sew_asapp
 
 
@@ -20,22 +22,18 @@ function train {
     10m)
         task=ft-10m
         config=base_10m
-        train_subset=train-10m
     ;;
     1h)
         task=ft-1h
         config=base_1h
-        train_subset=train-1
     ;;
     10h)
         task=ft-10h
         config=base_10h
-        train_subset=train-10
     ;;
     100h)
         task=ft-100h
         config=base_100h
-        train_subset=train-clean-100
     ;;
     *)
         echo "unknown task ft-$split"
@@ -62,8 +60,8 @@ function train {
         dataset.valid_subset=$valid_subset \
         distributed_training.distributed_world_size=$ngpu \
         common.seed=$seed \
-        dataset.max_tokens=3200000 \
-        optimization.update_freq="[$((8 / $ngpu))]" \
+        dataset.max_tokens=$((3200000 * 2))  \
+        optimization.update_freq="[$((8 / $ngpu / 2))]" \
         --config-dir config/finetuning \
         --config-name $config
 
