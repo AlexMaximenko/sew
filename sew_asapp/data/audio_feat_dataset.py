@@ -533,3 +533,4 @@ class FileAudioFeatClassificationDataset(RawAudioDataset):
         return {"id": torch.LongTensor([s["id"] for s in samples]),
                 "target": torch.LongTensor([s["target"] for s in samples]),
                 "net_input": input}
+

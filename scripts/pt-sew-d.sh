@@ -1,8 +1,7 @@
 size=$1
 ngpu=$2
-
-data=`pwd`/manifest/librispeech/train-960
-user_dir=`pwd`/sew_asapp
+data=$3
+user=$4
 
 task=pt
 root=example
