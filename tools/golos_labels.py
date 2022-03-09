@@ -28,7 +28,7 @@ def main():
     with open(args.manifest, 'r') as manifest:
         for line in manifest:
             record = json.loads(line)
-            data[record['audio_filepath']] = record['text']
+            data[record['audio_filepath'][6:]] = record['text']
 
     with open(args.tsv, 'r') as tsv, open(
         os.path.join(args.output_dir, args.output_name + '.ltr'), 'w'
